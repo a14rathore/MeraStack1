@@ -1,20 +1,15 @@
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 
 dotenv.config({ path: "./config.env" });
+require("./db/connection");
+// const User = require('./model/userSchema')
 
-const DB = process.env.DATABASE;
+app.use(express.json());
+app.use(require("./router/auth"));
 
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("Connection Succesful");
-  })
-  .catch((err) => {
-    console.log("Hellerror", err);
-  });
+const Port = process.env.PORT;
 
 // Middleware
 
@@ -23,9 +18,11 @@ const middleware = (req, res, next) => {
   next();
 };
 
-app.get("/", (req, res) => {
-  res.send("<h1>0hello World  yes</h1>");
-});
+/**below app.get no neede because we define router */
+
+// app.get("/", (req, res) => {
+//   res.send("<h1>hello World  yes App.js</h1>");
+// });
 
 app.get("/about", middleware, (req, res) => {
   res.send("Hello About");
@@ -43,6 +40,6 @@ app.get("/signup", (req, res) => {
   res.send("Hello Signup");
 });
 
-app.listen(3000, () => {
-  console.log("server running");
+app.listen(Port, () => {
+  console.log(`server running on ${Port}`);
 });
